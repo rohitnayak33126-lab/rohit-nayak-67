@@ -1,0 +1,637 @@
+```html
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rohit Social</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  color: #222;
+  padding-bottom: 70px;
+}
+
+header {
+  background: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  background: linear-gradient(45deg, #ff6600, #e1306c, #833ab4);
+  color: transparent;
+  background-clip: text;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: bold;
+}
+
+.upload-btn {
+  background: #0095f6;
+  color: white;
+}
+
+.container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 0 10px;
+}
+
+.profile {
+  background: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+  border: 3px solid #e1306c;
+  margin-bottom: 10px;
+}
+
+.profile input {
+  margin-top: 12px;
+  max-width: 100%;
+}
+
+.post {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.post-header {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.small-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+}
+
+.post-media {
+  width: 100%;
+  max-height: 600px;
+  object-fit: contain;
+  display: block;
+  background: #111;
+}
+
+.post-content {
+  padding: 14px;
+}
+
+.actions {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.like-btn {
+  color: #e1306c;
+  background: #fff0f5;
+  font-size: 17px;
+}
+
+.comment-box {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.comment-box input {
+  min-width: 0;
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.comment {
+  margin-top: 8px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.caption {
+  margin: 10px 0;
+  overflow-wrap: anywhere;
+}
+
+nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 4px;
+  border-top: 1px solid #ddd;
+  z-index: 10;
+}
+
+nav button {
+  background: white;
+  font-size: 19px;
+}
+
+.empty {
+  text-align: center;
+  padding: 35px 10px;
+  color: #777;
+  background: white;
+  border-radius: 12px;
+}
+
+#captionInput {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+#mediaInput {
+  max-width: 100%;
+}
+
+#uploadArea {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Rohit Social 📸</div>
+  <button class="upload-btn"
+          onclick="showUpload()">+ पोस्ट</button>
+</header>
+
+<main class="container">
+
+  <section class="profile" id="profile">
+    <img class="avatar" id="profilePhoto"
+         alt="Profile photo">
+
+    <h2 id="profileName">Rohit Nayak</h2>
+    <p>Welcome to my social world! 🌎</p>
+
+    <input type="file" id="avatarInput"
+           accept="image/*"
+           aria-label="अपनी प्रोफाइल फोटो चुनें">
+
+    <p style="margin-top:10px;font-size:13px">
+      अपनी प्रोफाइल फोटो चुनें
+    </p>
+  </section>
+
+  <section id="uploadArea" class="hidden">
+    <h3>नई पोस्ट बनाएँ ✨</h3>
+
+    <input type="file" id="mediaInput"
+           accept="image/*,video/*">
+
+    <textarea id="captionInput"
+      placeholder="आप क्या सोच रहे हैं?"
+      rows="3"></textarea>
+
+    <button class="upload-btn" onclick="addPost()">
+      पोस्ट शेयर करें
+    </button>
+
+    <button onclick="hideUpload()">
+      कैंसल
+    </button>
+
+    <p id="uploadMessage"
+       style="margin-top:10px;color:#d33"></p>
+  </section>
+
+  <section id="feed">
+    <div class="empty">
+      <h3>नमस्ते! 👋</h3>
+      <p>अपनी पहली फोटो या वीडियो पोस्ट करें।</p>
+      <br>
+      <button class="upload-btn" onclick="showUpload()">
+        पहली पोस्ट बनाएँ
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<nav>
+  <button onclick="goHome()">🏠<br><small>Home</small></button>
+  <button onclick="showUpload()">➕<br><small>Post</small></button>
+  <button onclick="goProfile()">👤<br><small>Profile</small></button>
+</nav>
+
+<script>
+const DB_NAME = "RohitSocialDB";
+const DB_VERSION = 1;
+
+let db;
+let posts = [];
+let profileURL = "";
+let busy = false;
+
+const feed = document.getElementById("feed");
+const mediaInput = document.getElementById("mediaInput");
+const captionInput = document.getElementById("captionInput");
+const uploadMessage = document.getElementById("uploadMessage");
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = () => {
+      const database = request.result;
+
+      if (!database.objectStoreNames.contains("posts")) {
+        database.createObjectStore("posts", {
+          keyPath: "id",
+          autoIncrement: true
+        });
+      }
+
+      if (!database.objectStoreNames.contains("settings")) {
+        database.createObjectStore("settings", {
+          keyPath: "key"
+        });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function transaction(store, mode, action) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, mode);
+    const request = action(tx.objectStore(store));
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+
+    tx.onabort = () => reject(tx.error);
+  });
+}
+
+async function saveSetting(key, value) {
+  return transaction("settings", "readwrite", store =>
+    store.put({ key, value })
+  );
+}
+
+async function getSetting(key) {
+  return transaction("settings", "readonly", store =>
+    store.get(key)
+  );
+}
+
+async function loadPosts() {
+  const result = await transaction("posts", "readonly", store =>
+    store.getAll()
+  );
+
+  posts = result.sort((a, b) => b.id - a.id);
+  renderPosts();
+}
+
+function showUpload() {
+  document.getElementById("uploadArea")
+    .classList.remove("hidden");
+
+  document.getElementById("uploadArea")
+    .scrollIntoView({ behavior: "smooth" });
+}
+
+function hideUpload() {
+  document.getElementById("uploadArea")
+    .classList.add("hidden");
+}
+
+function goHome() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function goProfile() {
+  document.getElementById("profile")
+    .scrollIntoView({ behavior: "smooth" });
+}
+
+document.getElementById("avatarInput")
+  .addEventListener("change", async event => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("कृपया फोटो चुनें।");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("प्रोफाइल फोटो 5 MB से छोटी रखें।");
+      return;
+    }
+
+    try {
+      const data = await readFile(file);
+      await saveSetting("avatar", data);
+      setAvatar(data);
+    } catch {
+      alert("फोटो सेव नहीं हो पाई।");
+    }
+  });
+
+function setAvatar(url) {
+  profileURL = url;
+  document.getElementById("profilePhoto").src = url;
+}
+
+function readFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function addPost() {
+  if (busy) return;
+
+  const file = mediaInput.files[0];
+  const caption = captionInput.value.trim();
+
+  if (!file) {
+    uploadMessage.textContent =
+      "पहले फोटो या वीडियो चुनें।";
+    return;
+  }
+
+  if (!file.type.startsWith("image/") &&
+      !file.type.startsWith("video/")) {
+    uploadMessage.textContent =
+      "केवल फोटो या वीडियो चुनें।";
+    return;
+  }
+
+  // Demo app में बहुत बड़ी फाइल से बचें।
+  if (file.size > 30 * 1024 * 1024) {
+    uploadMessage.textContent =
+      "फाइल 30 MB से छोटी रखें।";
+    return;
+  }
+
+  busy = true;
+  uploadMessage.textContent = "पोस्ट सेव हो रही है...";
+
+  try {
+    const media = await readFile(file);
+
+    const post = {
+      username: document.getElementById("profileName").textContent,
+      media,
+      type: file.type.startsWith("video/") ? "video" : "image",
+      caption,
+      likes: 0,
+      liked: false,
+      comments: [],
+      date: new Date().toISOString()
+    };
+
+    const saved = await transaction("posts", "readwrite",
+      store => store.add(post)
+    );
+
+    post.id = saved;
+    posts.unshift(post);
+
+    mediaInput.value = "";
+    captionInput.value = "";
+    uploadMessage.textContent = "";
+    hideUpload();
+    renderPosts();
+
+  } catch (error) {
+    console.error(error);
+    uploadMessage.textContent =
+      "पोस्ट सेव नहीं हुई। ब्राउज़र की स्टोरेज खाली जाँचें।";
+  } finally {
+    busy = false;
+  }
+}
+
+function renderPosts() {
+  feed.innerHTML = "";
+
+  if (posts.length === 0) {
+    feed.innerHTML = `
+      <div class="empty">
+        <h3>अभी कोई पोस्ट नहीं है 📷</h3>
+        <p>अपनी पहली फोटो या वीडियो शेयर करें।</p>
+      </div>`;
+    return;
+  }
+
+  posts.forEach(post => {
+    const article = document.createElement("article");
+    article.className = "post";
+
+    const header = document.createElement("div");
+    header.className = "post-header";
+
+    const avatar = document.createElement("img");
+    avatar.className = "small-avatar";
+    avatar.alt = "Profile";
+
+    if (profileURL) avatar.src = profileURL;
+
+    const username = document.createElement("span");
+    username.textContent = post.username || "Rohit Social";
+
+    header.append(avatar, username);
+
+    let media;
+
+    if (post.type === "video") {
+      media = document.createElement("video");
+      media.controls = true;
+      media.playsInline = true;
+      media.preload = "metadata";
+    } else {
+      media = document.createElement("img");
+      media.alt = "Shared photo";
+    }
+
+    media.className = "post-media";
+    media.src = post.media;
+
+    const content = document.createElement("div");
+    content.className = "post-content";
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const likeButton = document.createElement("button");
+    likeButton.className = "like-btn";
+    likeButton.textContent =
+      `${post.liked ? "❤️" : "🤍"} Like (${post.likes})`;
+
+    likeButton.onclick = () => toggleLike(post.id);
+
+    actions.appendChild(likeButton);
+
+    const caption = document.createElement("p");
+    caption.className = "caption";
+    caption.textContent = post.caption
+      ? `${post.username}: ${post.caption}`
+      : "";
+
+    const comments = document.createElement("div");
+
+    (post.comments || []).forEach(text => {
+      const line = document.createElement("p");
+      line.className = "comment";
+      line.textContent = "💬 " + text;
+      comments.appendChild(line);
+    });
+
+    const commentBox = document.createElement("div");
+    commentBox.className = "comment-box";
+
+    const input = document.createElement("input");
+    input.placeholder = "कमेंट लिखें...";
+    input.maxLength = 250;
+
+    const send = document.createElement("button");
+    send.className = "upload-btn";
+    send.textContent = "Send";
+
+    send.onclick = () => {
+      addComment(post.id, input.value);
+    };
+
+    commentBox.append(input, send);
+
+    const date = document.createElement("small");
+    date.style.color = "#777";
+    date.textContent = new Date(post.date)
+      .toLocaleString("hi-IN");
+
+    content.append(actions, caption, comments, commentBox, date);
+    article.append(header, media, content);
+    feed.appendChild(article);
+  });
+}
+
+async function toggleLike(id) {
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+
+  post.liked = !post.liked;
+  post.likes = Math.max(0, post.likes + (post.liked ? 1 : -1));
+
+  await transaction("posts", "readwrite",
+    store => store.put(post)
+  );
+
+  renderPosts();
+}
+
+async function addComment(id, text) {
+  text = text.trim();
+  if (!text) return;
+
+  const post = posts.find(p => p.id === id);
+  if (!post) return;
+
+  post.comments = post.comments || [];
+  post.comments.push(text);
+
+  try {
+    await transaction("posts", "readwrite",
+      store => store.put(post)
+    );
+    renderPosts();
+  } catch {
+    alert("कमेंट सेव नहीं हुआ।");
+  }
+}
+
+async function startApp() {
+  try {
+    db = await openDB();
+
+    const savedAvatar = await getSetting("avatar");
+
+    if (savedAvatar && savedAvatar.value) {
+      setAvatar(savedAvatar.value);
+    }
+
+    await loadPosts();
+
+  } catch (error) {
+    console.error(error);
+    feed.innerHTML = `
+      <div class="empty">
+        ऐप का स्टोरेज शुरू नहीं हो सका।
+        कृपया आधुनिक ब्राउज़र में index.html खोलें।
+      </div>`;
+  }
+}
+
+startApp();
+</script>
+
+</body>
+</html>
+```
